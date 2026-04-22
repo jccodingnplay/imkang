@@ -14,6 +14,7 @@ export default class PowerUp {
             health: '#00ff77'
         };
         this.color = this.colors[type];
+        this.toRemove = false;
     }
 
     update(deltaTime) {

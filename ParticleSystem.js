@@ -1,34 +1,3 @@
-class Particle {
-    constructor(x, y, color, size, velocity, life) {
-        this.x = x;
-        this.y = y;
-        this.color = color;
-        this.size = size;
-        this.velocity = velocity;
-        this.life = life;
-        this.maxLife = life;
-    }
-
-    update(deltaTime) {
-        this.x += this.velocity.x * deltaTime;
-        this.y += this.velocity.y * deltaTime;
-        this.life -= deltaTime;
-    }
-
-    draw(ctx) {
-        const opacity = this.life / this.maxLife;
-        ctx.save();
-        ctx.globalAlpha = opacity;
-        ctx.fillStyle = this.color;
-        ctx.shadowBlur = 5;
-        ctx.shadowColor = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        this.ctx.fill(); // Wait, this.ctx is wrong, it's passed as arg
-        ctx.restore();
-    }
-}
-
 export default class ParticleSystem {
     constructor(ctx) {
         this.ctx = ctx;
@@ -55,13 +24,15 @@ export default class ParticleSystem {
     }
 
     update(deltaTime) {
+        if (!deltaTime) return;
+        
         this.particles = this.particles.filter(p => {
             p.x += p.velocity.x * deltaTime;
             p.y += p.velocity.y * deltaTime;
             p.life -= deltaTime;
             
             if (p.life > 0) {
-                const opacity = p.life / p.maxLife;
+                const opacity = Math.max(0, p.life / p.maxLife);
                 this.ctx.save();
                 this.ctx.globalAlpha = opacity;
                 this.ctx.fillStyle = p.color;

@@ -7,6 +7,7 @@ export default class Projectile {
         this.color = color;
         this.radius = radius;
         this.damage = damage;
+        this.toRemove = false;
     }
 
     update(deltaTime) {
