@@ -163,7 +163,16 @@ function initMenu() {
     });
   });
 
-  document.getElementById('start-btn').addEventListener('click', startCountdown);
+  document.getElementById('start-btn').addEventListener('click', () => {
+    // ★ 핵심: 브라우저 자동재생 정책 때문에
+    // AudioContext는 반드시 사용자 클릭 이벤트 내부에서 즉시 초기화해야 합니다.
+    // 카운트다운 후(3초 뒤)에 하면 제스처가 만료되어 소리가 안 납니다.
+    audioEngine.init();
+    if (audioEngine.ctx && audioEngine.ctx.state === 'suspended') {
+      audioEngine.ctx.resume();
+    }
+    startCountdown();
+  });
 }
 
 // ─── 화면 전환 ────────────────────────────────────────────
@@ -614,7 +623,11 @@ function showResult() {
 }
 
 document.getElementById('retry-btn').addEventListener('click', () => {
-  showScreen('game');
+  // 재시작 버튼도 클릭 즉시 오디오 컨텍스트 활성화
+  audioEngine.init();
+  if (audioEngine.ctx && audioEngine.ctx.state === 'suspended') {
+    audioEngine.ctx.resume();
+  }
   startCountdown();
 });
 document.getElementById('menu-btn-result').addEventListener('click', () => {
