@@ -353,17 +353,19 @@ class NCSAudioEngine {
     }
   }
 
-  play(songId, bpm, bars, onEnded) {
+  play(songId, bpm, bars, leadIn, onEnded) {
     this.init(); this.resume();
     this.stop();
     this.bpm = bpm;
     this.beatInterval = 60 / bpm;
     this.isPlaying = true;
     this.onEnded = onEnded;
+    this.leadIn = leadIn || 0;
 
     const barDuration = this.beatInterval * 4;
     this.songDuration = bars * barDuration;
-    this.startTime = this.ctx.currentTime + 0.1;
+    // startTime = when audio actually begins (leadIn seconds from now)
+    this.startTime = this.ctx.currentTime + Math.max(0.1, this.leadIn);
 
     if (songId === 0) this.scheduleSongNeonRush(this.startTime, bars);
     else if (songId === 1) this.scheduleSongCyberDream(this.startTime, bars);
@@ -381,8 +383,9 @@ class NCSAudioEngine {
   }
 
   getElapsedTime() {
-    if (!this.ctx || !this.isPlaying) return 0;
-    return Math.max(0, this.ctx.currentTime - this.startTime);
+    if (!this.ctx || !this.isPlaying) return -999;
+    // Returns negative during lead-in (notes falling from top), 0+ during playback
+    return this.ctx.currentTime - this.startTime;
   }
 
   getProgress() {

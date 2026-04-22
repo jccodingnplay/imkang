@@ -178,8 +178,10 @@ function showScreen(name) {
 function startCountdown() {
   const overlay = document.getElementById('countdown-overlay');
   const numEl   = document.getElementById('countdown-number');
-  overlay.classList.remove('hidden');
   showScreen('game');
+  // ★ 게임 화면이 표시된 후 캔버스 크기를 재계산
+  onResize();
+  overlay.classList.remove('hidden');
 
   let count = 3;
   numEl.textContent = count;
@@ -221,9 +223,12 @@ function startGame() {
   document.getElementById('hud-song-artist').textContent = song.artist;
   updateHUD();
 
-  // 음악 재생
-  audioEngine.play(song.id, song.bpm, song.bars, onSongEnd);
-  state.gameStartTime = audioEngine.startTime; // ctx 기준 시간
+  // 리드인: 화면 위쪽에서 판정선까지 노트가 내려오는 시간
+  const leadIn = RECEPTOR_Y / NOTE_SPEED; // 초 단위 (보통 1.2~1.8초)
+
+  // 음악 재생 (leadIn 이후에 시작)
+  audioEngine.play(song.id, song.bpm, song.bars, leadIn, onSongEnd);
+  state.gameStartTime = audioEngine.startTime;
 
   // 게임 루프
   if (state.animFrame) cancelAnimationFrame(state.animFrame);
@@ -250,9 +255,9 @@ function gameLoop(timestamp) {
     const timeDiff = note.time - elapsed;
     note.y = RECEPTOR_Y - timeDiff * NOTE_SPEED;
 
-    // 미스 판정 (판정선을 지나쳐 버린 경우)
+    // Miss 판정: 판정선을 지나쳐 버린 경우 (elapsed가 양수일 때만 체크)
     const windows = JUDGMENT_WINDOWS[state.selectedDiff];
-    if (timeDiff < -(windows.good / 1000)) {
+    if (elapsed > note.time + (windows.good / 1000)) {
       note.missed = true;
       onMiss();
     }
@@ -424,7 +429,7 @@ function pressLane(lane) {
   const keyEl = document.getElementById('key-' + 'asdf'[lane]);
   if (keyEl) keyEl.classList.add('pressed');
 
-  // 판정
+  // 판정 (리드인 중에는 히트 불가 — elapsed가 충분히 커야 함)
   const elapsed = audioEngine.getElapsedTime();
   const windows = JUDGMENT_WINDOWS[state.selectedDiff];
   let bestDiff = Infinity, bestNote = null;
