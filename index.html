@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nebula Strike - Space Shooter</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- HUD -->
+        <div id="hud" class="hidden">
+            <div class="stat-group">
+                <div class="label">SCORE</div>
+                <div id="score-value">000000</div>
+            </div>
+            <div id="health-bar-container">
+                <div id="health-bar-fill"></div>
+            </div>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="overlay">
+            <h1 class="glitch" data-text="NEBULA STRIKE">NEBULA STRIKE</h1>
+            <p class="subtitle">Defend the galaxy from the void swarm</p>
+            <button id="start-button" class="btn-premium">START MISSION</button>
+            <div class="controls-hint">
+                <span>WASD / ARROWS to Move</span>
+                <span>SPACE to Shoot</span>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="overlay hidden">
+            <h2 class="title-red">MISSION FAILED</h2>
+            <div class="final-score">SCORE: <span id="final-score-value">0</span></div>
+            <button id="restart-button" class="btn-premium">RETRY MISSION</button>
+        </div>
+    </div>
+
+    <script src="script.js" type="module"></script>
+</body>
+</html>
