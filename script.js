@@ -1,30 +1,31 @@
 import GameEngine from './GameEngine.js';
 
 window.addEventListener('load', () => {
-    const canvas = document.getElementById('gameCanvas');
-    const startButton = document.getElementById('start-button');
-    const restartButton = document.getElementById('restart-button');
-    const startScreen = document.getElementById('start-screen');
-    const gameOverScreen = document.getElementById('game-over-screen');
-    const hud = document.getElementById('hud');
+    const canvas          = document.getElementById('gameCanvas');
+    const startScreen     = document.getElementById('start-screen');
+    const gameOverScreen  = document.getElementById('game-over-screen');
+    const hud             = document.getElementById('hud');
+    const startButton     = document.getElementById('start-button');
+    const restartButton   = document.getElementById('restart-button');
+    const finalScore      = document.getElementById('final-score-value');
+    const finalLevel      = document.getElementById('final-level-value');
 
-    // Initialize the Game Engine
     const game = new GameEngine(canvas);
 
-    startButton.addEventListener('click', () => {
+    function startGame() {
+        game.sound.resume();
         startScreen.classList.add('hidden');
+        gameOverScreen.classList.add('hidden');
         hud.classList.remove('hidden');
         game.start();
-    });
+    }
 
-    restartButton.addEventListener('click', () => {
-        gameOverScreen.classList.add('hidden');
-        game.start();
-    });
+    startButton.addEventListener('click',   startGame);
+    restartButton.addEventListener('click', startGame);
 
-    // Handle game over signal from engine
     window.addEventListener('gameover', (e) => {
         gameOverScreen.classList.remove('hidden');
-        document.getElementById('final-score-value').textContent = e.detail.score;
+        finalScore.textContent = e.detail.score.toString().padStart(6, '0');
+        finalLevel.textContent = game.level;
     });
 });
