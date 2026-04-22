@@ -67,14 +67,13 @@ export default class Player {
 
     shoot() {
         if (this.powerUps.multishot > 0) {
-            const angles = [-0.2, 0, 0.2];
-            angles.forEach(angle => {
-                const p = new Projectile(this.x, this.y - 10, -0.8, this.color, 10, 25);
-                p.speedX = Math.sin(angle) * 0.5; // Need to update Projectile.js to handle speedX
+            const offsets = [-15, 0, 15];
+            offsets.forEach(ox => {
+                const p = new Projectile(this.x + ox, this.y - 10, -0.8, this.color, 4, 25);
                 this.engine.entities.playerProjectiles.push(p);
             });
         } else {
-            const p = new Projectile(this.x, this.y - 10, -0.8, this.color, 10, 25);
+            const p = new Projectile(this.x, this.y - 10, -0.8, this.color, 4, 25);
             this.engine.entities.playerProjectiles.push(p);
         }
     }

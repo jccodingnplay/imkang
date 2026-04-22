@@ -43,7 +43,11 @@ export default class GameEngine {
 
     initInput() {
         this.keys = {};
-        window.addEventListener('keydown', (e) => { this.keys[e.code] = true; });
+        const preventKeys = ['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+        window.addEventListener('keydown', (e) => {
+            if (preventKeys.includes(e.code)) e.preventDefault();
+            this.keys[e.code] = true;
+        });
         window.addEventListener('keyup', (e) => { this.keys[e.code] = false; });
     }
 
