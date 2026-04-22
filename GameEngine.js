@@ -169,13 +169,13 @@ export default class GameEngine {
             // Update & Draw Projectiles
             this.entities.playerProjectiles = this.entities.playerProjectiles.filter(p => {
                 p.update(deltaTime);
-                p.draw();
+                p.draw(this.ctx);
                 return p.y > -50 && p.y < this.height + 50;
             });
 
             this.entities.enemyProjectiles = this.entities.enemyProjectiles.filter(p => {
                 p.update(deltaTime);
-                p.draw();
+                p.draw(this.ctx);
                 return p.y > -50 && p.y < this.height + 50;
             });
 
